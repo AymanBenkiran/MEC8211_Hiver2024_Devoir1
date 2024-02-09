@@ -9,6 +9,8 @@ Date de creation du fichier : 5 féerier 2024
 
 #%% Importation des modules
 import numpy as np
+from scipy.sparse.linalg import spsolve
+from scipy.sparse import csc_matrix
 
 #%% mdf1_rxn_0
 def mdf1_rxn_0(prm_prob, prm_sim):
@@ -139,7 +141,10 @@ def mdf2_rxn_0(prm_prob, prm_sim):
             b[i] = cst2*(c[i] - prm_sim.dt*prm_prob.s)
 
         # Resolution du systeme lineaire
-        c = np.linalg.solve(a, b)
+            #Conversion de la matrice A en format csc
+        #a = csc_matrix(a) 
+        c = spsolve(a, b)
+        #c = np.linalg.solve(a, b)
         tf += prm_sim.dt
         diff = abs(sum(c)-sum_c_prec)/abs(sum_c_prec)
     prm_sim.c = c
