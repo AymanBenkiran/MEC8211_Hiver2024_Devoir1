@@ -1,12 +1,12 @@
 
 # Change log
-All notable changes to the 1st homework of MEC8211 is documented in this file.
+All notable changes to the 1st homework of MEC8211 are documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 
 
-## [Main] - 2024-02-09
+## [Main] - 2024-02-10
 
 ### Added
 
@@ -22,14 +22,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Changed
 
-- MINOR Solve linear equation with sparce matrices in ``devoir1_tests_unitaires.py``
+- MINOR Solve linear equation with sparce matrices in ``devoir1_tests_unitaires.py``.
 
 
 ## [Main] - 2024-02-08
 
 ### Changed
 
-- MINOR Apply most of pylint comments, some doesn't really apply. Pylint is not able to identify variables used thorugh "exec()" commands.
+- MINOR Apply most of pylint comments, some doesn't really apply. Pylint is not able to identify variables used through "exec()" commands.
 - MINOR Rework code structure to make it more object oriented in ``devoir1_main.py``.
 - MAJOR Through concensus, the object oriented code was selected as the final code.
 
@@ -40,3 +40,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 - MINOR Add README.md and .gitignore files.
 - MAJOR Creation of the GitHub repo and added individual codes.
+
+
+## [Sample-Branch_name] - YYYY-MM-DD
+
+### Added
+
+- MAJOR/MINOR/PATCH Description.
+
+### Changed
+
+- MAJOR/MINOR/PATCH Description.
+
+### Deprecated
+
+- MAJOR/MINOR/PATCH Description.
+
+### Removed
+
+- MAJOR/MINOR/PATCH Description.
+
+### Fixed
+
+- MAJOR/MINOR/PATCH Description.
