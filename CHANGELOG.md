@@ -17,12 +17,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Added
 
-- MAJOR Add unit tests for error calulations and analytical solution.
+- MAJOR Add unit tests for error calulations and analytical solution in ``devoir1_tests_unitaires.py``.
 
 
 ### Changed
 
-- MINOR Solve linear equation with sparce matrices in ``devoir1_tests_unitaires.py``.
+- MINOR Solve linear equation with sparce matrices in ``devoir1_functions.py``.
 
 
 ## [Main] - 2024-02-08
