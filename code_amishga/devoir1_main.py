@@ -113,19 +113,20 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
     print("****************************************************************************")
     for prm_sim in prm_simulation:
         mdf_i = prm_sim.mdf
+        ordre_de_rxn = prm_sim.ordre_de_rxn
         # Calcul de la concentration au regime permanent
         # pylint: disable-next=exec-used
-        exec(f"mdf{mdf_i}_rxn_0(prm_rxn_0, prm_sim)")
+        exec(f"mdf{mdf_i}_rxn_{ordre_de_rxn}(prm_rxn_0, prm_sim)")
 
         # Exportation des solutions dans des fichiers csv
         exported_data = pd.DataFrame({'r': prm_sim.mesh, 'C(r)': prm_sim.c})
-        exported_data.to_csv(f"./solutions/mdf{mdf_i}_rxn0_noeuds_"
+        exported_data.to_csv(f"./solutions/mdf{mdf_i}_rxn{ordre_de_rxn}_noeuds_"
                              f"{str(prm_sim.n_noeuds).zfill(3)}.csv", index=False)
 
         # Affichage au terminal
         print("****************************************************************************")
         print(f"Ordre de la methode des differences finies : {mdf_i}")
-        print(f"Ordre de la reaction du terme source : {prm_sim.ordre_de_rxn}")
+        print(f"Ordre de la reaction du terme source : {ordre_de_rxn}")
         print(f"Nombre de noeuds : {prm_sim.n_noeuds} noeuds")
         print(f"dr = {prm_sim.dr} m")
         print(f"dt = {prm_sim.dt} s")
@@ -148,6 +149,7 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
     liste_erreur_linfty = []
     for prm_sim in prm_simulation:
         mdf_i = prm_sim.mdf
+        ordre_de_rxn = prm_sim.ordre_de_rxn
         dr.append(prm_sim.dr)
         c_analytique = analytique(prm_rxn_0, prm_sim.mesh)  # Solution analytique [mol/m^3]
         liste_erreur_l1.append(erreur_l1(prm_sim.c, c_analytique))
@@ -158,13 +160,13 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
     exported_data = pd.DataFrame({'dr': dr, 'L1_error': liste_erreur_l1,
                                   'L2_error': liste_erreur_l2,
                                   'Linfty_error': liste_erreur_linfty})
-    exported_data.to_csv(f"./erreurs/mdf{mdf_i}_rxn0.csv", index=False)
+    exported_data.to_csv(f"./erreurs/mdf{mdf_i}_rxn{ordre_de_rxn}.csv", index=False)
 
     # Affichage graphique
     plt.figure()
-    plt.loglog(dr,liste_erreur_l1, "s-", label=r"Erreur L$_1$")
-    plt.loglog(dr,liste_erreur_l2, "s-", label=r"Erreur L$_2$")
-    plt.loglog(dr,liste_erreur_linfty, "s-", label=r"Erreur L$_\infty$")
+    plt.loglog(dr,liste_erreur_l1, "s-", label=r"Erreur L$^1$")
+    plt.loglog(dr,liste_erreur_l2, "s-", label=r"Erreur L$^2$")
+    plt.loglog(dr,liste_erreur_linfty, "s-", label=r"Erreur L$^\infty$")
     plt.xlabel(r"$\Delta r$ [m]")
     plt.ylabel(r"Erreur [mol/m$^3$]")
     plt.title("")
