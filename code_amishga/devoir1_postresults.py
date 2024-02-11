@@ -98,3 +98,20 @@ def convergence_compar(norm_l, n_l,
         else:
             plt.savefig(typAnalyse + "_Convergence.png", dpi=600)
     plt.show()
+
+def ordre_convergence(dr_l, error_l):
+    """ 
+    Utilise la bibliotheque Numpy pour determiner l'ordre de convergence d'un
+    schema numerique a partir d'une discretisation spatiale et des erreurs associees
+    Entrees:
+        - dr_l: ARRAY ou LIST, liste contenant les points de la discretisation 
+        radiale du cylindre
+        - error_l: ARRAY ou LIST, liste contenant les erreurs du schema numerique
+        etant donne une norme et une discretisation spatiale
+    Sorties:
+        - m: FLOAT Ordre de convergence du schéma
+    """
+    
+    ordre,b = np.polyfit(np.log10(dr_l), np.log10(error_l), 1)
+    
+    return ordre
