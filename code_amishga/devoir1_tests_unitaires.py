@@ -4,7 +4,7 @@ Fichier : devoir1_tests_unitaires.py
 Description : Fichier tertiaire contenant les fonctions de tests unitaires pour le devoir 1
               (a utiliser separement)
 Auteur.es :
-Date de creation du fichier : 5 féerier 2024
+Date de creation du fichier : 5 février 2024
 """
 
 #%% Importation des modules
@@ -15,6 +15,7 @@ try:
     from devoir1_functions import (mdf1_rxn_0, mdf2_rxn_0, analytique, erreur_l1,
                                    erreur_l2, erreur_linfty)
     from devoir1_main import (ParametresProb)
+    from devoir1_postresults import (ordre_convergence)
 except ImportError:
     print("ERREUR ! Il y a une erreur fatale dans le fichier devoir1_functions.py ou devoir1_main")
     
@@ -24,7 +25,7 @@ def test_errors():
     This function verifies the L1, L2 and L_inf errors between two vectors
     """
     
-    #Vectors and scalars of inputs
+    # Vectors and scalars of inputs
     x = [1, 2, 3, 4, 5]
     vecteur_x = np.array(x)
     
@@ -34,17 +35,17 @@ def test_errors():
     dx = 0.1
     L  = 1.0
     
-    #Outputs (execution)
+    # Outputs (execution)
     L1 = erreur_l1(vecteur_x, vecteur_y)
     L2 = erreur_l2(vecteur_x, vecteur_y)
     L_inf = erreur_linfty(vecteur_x, vecteur_y)
     
-    #Verification with expected results
+    # Verification with expected results
     test1 = 0
     test2 = 0
     test3 = 0
     
-    #Conditions
+    # Conditions
     if (abs(L1 - 0.104) < 0.001) :
         test1 = 1
     if (abs(L2 - 0.120167) < 0.000001):
@@ -52,7 +53,7 @@ def test_errors():
     if (abs(L_inf - 0.2) < 0.000001):
         test3 = 1
     
-    #Print test results
+    # Print test results
     if (test1 == 1):
         print("L'erreur L1 est verifiee")
     elif (test1 == 0):
@@ -106,7 +107,43 @@ def test_solution_analytique():
         print("*en r = R")
         print(concentration_analytique[-1])
     
+def test_order_convergence():
+    """
+    This function verifies the evaluation of order of convergence
+    """
     
-#%% execution des tests unitaires
+    #Inputs
+    dr_l = [100, 0.1]
+    error_l = [0.01, 0.001]
+    
+    #Output (execution)
+    ordre = ordre_convergence(dr_l, error_l)
+
+    #Verification with expected results
+    test = 0
+    
+        #Conditions
+    if (abs(ordre - 0.3333) < 0.0001) :
+        test = 1
+    
+        #Print test results
+    if (test == 1):
+        print("L'ordre de convergence est verifie")
+
+    elif (test == 0):
+        print("Il y a une erreur dans l'ordre de convergence")
+        print("La solution trouvee pour l'ordre est :")
+        print(ordre)
+        
+#%% Execution des tests unitaires
+print("########################")
+print("###Verification erreurs")
 test_errors()
+
+print("####################################")
+print("###Verification solution analytique")
 test_solution_analytique()
+
+print("####################################")
+print("###Verification ordre de convergence")
+test_order_convergence()
