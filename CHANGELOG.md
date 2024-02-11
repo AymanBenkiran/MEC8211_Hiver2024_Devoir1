@@ -4,7 +4,16 @@ All notable changes to the 1st homework of MEC8211 are documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [Main] - 2024-02-11
 
+### Changed
+
+- MINOR Modifying the plotting process, using ``devoir1_tests_postresults.py``
+
+### Added
+
+- MAJOR Process to manage directories and files creation for storing results in ``devoir1_functions.py``
+- MINOR Process to manage directories and files creations in ``devoir1_main.py``
 
 ## [Main] - 2024-02-10
 
