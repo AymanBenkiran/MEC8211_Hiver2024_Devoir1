@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Main] - 2024-02-11
 
+### Added
+
+- MAJOR Add function to verify evaluation of order of convergence in ``devoir1_functions.py``
+
+## [Main] - 2024-02-11
+
 ### Changed
 
 - MINOR Modifying the plotting process, using ``devoir1_tests_postresults.py``
