@@ -4,7 +4,7 @@ MEC8211 - Devoir 1 : Verification de code
 Fichier : devoir1_main.py
 Description : Fichier principal pour le devoir 1
 Lancer avec :  python3 devoir1_main.py
-Auteur.es :
+Auteur.e.s :
 Date de creation du fichier : 5 fevrier 2024
 '''
 
@@ -12,13 +12,19 @@ Date de creation du fichier : 5 fevrier 2024
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import os
 
 # Importation des fonctions
 try:
     from devoir1_functions import (mdf1_rxn_0, mdf2_rxn_0, analytique, erreur_l1,
-                                   erreur_l2, erreur_linfty)
+                                   erreur_l2, erreur_linfty, get_path_results)
 except ImportError:
     print("ERREUR ! Il y a une erreur fatale dans le fichier devoir1_functions.py")
+
+try:
+    from devoir1_postresults import (plot_stationnary_compar, convergence_compar)
+except ImportError:
+    print("ERREUR ! Il y a une erreur fatale dans le fichier devoir1_postresults.py")
 
 #%% Donnees du probleme et definition des classes
 
@@ -106,6 +112,12 @@ for i, n_noeuds in enumerate(n_noeuds_liste):
     prm_simulations_mdf1_rxn0.append(ParametresSim(prm_rxn_0, n_noeuds, 1))
     prm_simulations_mdf2_rxn0.append(ParametresSim(prm_rxn_0, n_noeuds, 2))
 
+#%% Création des Répertoires de Solution
+
+actual_path = os.getcwd()
+
+path_solutions = get_path_results(actual_path, 'solutions')
+path_errors = get_path_results(actual_path, 'erreurs')
 
 #%% Resolution du probleme
 
@@ -120,9 +132,13 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
 
         # Exportation des solutions dans des fichiers csv
         exported_data = pd.DataFrame({'r': prm_sim.mesh, 'C(r)': prm_sim.c})
+        
+        os.chdir(path_solutions)
+
         exported_data.to_csv(f"./solutions/mdf{mdf_i}_rxn{ordre_de_rxn}_noeuds_"
                              f"{str(prm_sim.n_noeuds).zfill(3)}.csv", index=False)
-
+        os.chdir(actual_path)
+        
         # Affichage au terminal
         print("****************************************************************************")
         print(f"Ordre de la methode des differences finies : {mdf_i}")
@@ -141,7 +157,7 @@ liste_erreur_l1 = []        # Erreur L1 [mol/m^3]
 liste_erreur_l2 = []        # Erreur L2
 liste_erreur_linfty = []    # Erreur Linfty
 
-# Calcul des erreurs pour les differentes simualtions
+# Calcul des erreurs pour les differentes simulations
 for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
     dr = []
     liste_erreur_l1 = []
@@ -155,22 +171,33 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
         liste_erreur_l1.append(erreur_l1(prm_sim.c, c_analytique))
         liste_erreur_l2.append(erreur_l2(prm_sim.c, c_analytique))
         liste_erreur_linfty.append(erreur_linfty(prm_sim.c, c_analytique))
-
+        
+        #Comparaison graphique des solutions
+        n_noeuds = prm_sim.n_noeuds
+        title_analytique = f"Comparaison_Analytique_mdf{mdf_i}_noeuds{n_noeuds}"
+        # plot_stationnary_compar(prm_sim.mesh, c_analytique, prm_sim.c,
+        #                         plotting = 'False',
+        #                         path_save = path_solutions,
+        #                         title = title_analytique)
+        
     # Exportation des valeurs d'erreur dans un fichier csv
     exported_data = pd.DataFrame({'dr': dr, 'L1_error': liste_erreur_l1,
                                   'L2_error': liste_erreur_l2,
                                   'Linfty_error': liste_erreur_linfty})
+    
+    os.chdir(path_errors)
     exported_data.to_csv(f"./erreurs/mdf{mdf_i}_rxn{ordre_de_rxn}.csv", index=False)
-
+    os.chdir(actual_path)
+    
     # Affichage graphique
-    plt.figure()
-    plt.loglog(dr,liste_erreur_l1, "s-", label=r"Erreur L$^1$")
-    plt.loglog(dr,liste_erreur_l2, "s-", label=r"Erreur L$^2$")
-    plt.loglog(dr,liste_erreur_linfty, "s-", label=r"Erreur L$^\infty$")
-    plt.xlabel(r"$\Delta r$ [m]")
-    plt.ylabel(r"Erreur [mol/m$^3$]")
-    plt.title("")
-    plt.legend()
-    plt.grid()
-    plt.savefig(f"erreurs_mdf{mdf_i}.png", dpi=600)
-    plt.show()
+    
+    title_errors = f"erreurs_mdf{mdf_i}"
+    
+    errors_l = [('Erreur $L^1$',liste_erreur_l1), 
+                ('Erreur $L^2$',liste_erreur_l2), 
+                ('Erreur $L^\inf$',liste_erreur_linfty)]
+    
+    convergence_compar(errors_l, dr, 
+                           typAnalyse = "Spatial", 
+                           path_save = path_errors,
+                           title = title_errors)
