@@ -3,14 +3,14 @@ MEC8211 - Devoir 1 : Verification de code
 Fichier : devoir1_functions.py
 Description : Fichier secondaire contenant les fonctions pour le devoir 1
               (a utiliser conjointement avec devoir1_main.py)
-Auteur.es :
+Auteur.e.s :
 Date de creation du fichier : 5 féerier 2024
 """
 
 #%% Importation des modules
 import numpy as np
 from scipy.sparse.linalg import spsolve
-from scipy.sparse import csc_matrix
+import os
 
 #%% mdf1_rxn_0
 def mdf1_rxn_0(prm_prob, prm_sim):
@@ -18,7 +18,7 @@ def mdf1_rxn_0(prm_prob, prm_sim):
     Fonction qui resout par le probleme transitoire jusqu'a l'atteinte du regime
     permanent par la methode des differences finies (Schemas d'ordre globaux 1 en
     temps et en espace).
-        - En r = 0 : Un schema Gear avant est utilise pour approximer le gradient
+        - En r = 0 : Un schema de Gear avant est utilise pour approximer le gradient
                      de concentration (ordre 2)
         - Pour les points centraux :
             - Derivee premiere : differentiation avant (ordre 1)
@@ -59,7 +59,7 @@ def mdf1_rxn_0(prm_prob, prm_sim):
 
     while diff > prm_sim.tol:
         sum_c_prec = sum(c)
-
+        
         # Conditions frontieres
         appliquer_conditions_frontieres(a, b, prm_prob.ce)
 
@@ -71,7 +71,7 @@ def mdf1_rxn_0(prm_prob, prm_sim):
             a[i][i] = cst2 + cst1*(prm_sim.dr + 2*prm_sim.mesh[i])
             a[i][i+1] = -cst1*(prm_sim.dr + prm_sim.mesh[i])
             b[i] = cst2*(c[i] - prm_sim.dt*prm_prob.s)
-
+        
         # Resolution du systeme lineaire
         c = np.linalg.solve(a, b)
         tf += prm_sim.dt
@@ -101,7 +101,7 @@ def mdf2_rxn_0(prm_prob, prm_sim):
             - d_eff : float - Coefficient de diffusion effectif de sel dans le beton [m^2/s]
             - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
             - s : float - Terme source constant (reaction d'ordre 0) [mol/m^3/s]
-            - k : float - Constante de réaction pour la reaction d'ordre 1 [s^{-1}]
+            - k : float - Constante de reaction pour la reaction d'ordre 1 [s^{-1}]
         - prm_sim : Objet qui contient les parametres de simulation
             - n_noeuds : int - Nombre de noeuds dans le maillage [noeud]
             - dr : float - Pas en espace des differents maillages [m]
@@ -124,10 +124,10 @@ def mdf2_rxn_0(prm_prob, prm_sim):
     # Condition initiale
     c = np.full(n, prm_prob.c0)
     c[-1] = prm_prob.ce
-
+        
     while diff > prm_sim.tol:
         sum_c_prec = sum(c)
-
+        
         # Conditions frontieres
         appliquer_conditions_frontieres(a, b, prm_prob.ce)
 
@@ -139,14 +139,13 @@ def mdf2_rxn_0(prm_prob, prm_sim):
             a[i][i] = cst2 + 4*cst1*prm_sim.mesh[i]
             a[i][i+1] = -cst1*(prm_sim.dr + 2*prm_sim.mesh[i])
             b[i] = cst2*(c[i] - prm_sim.dt*prm_prob.s)
-
+        
         # Resolution du systeme lineaire
-            #Conversion de la matrice A en format csc
-        #a = csc_matrix(a) 
         c = spsolve(a, b)
         #c = np.linalg.solve(a, b)
         tf += prm_sim.dt
         diff = abs(sum(c)-sum_c_prec)/abs(sum_c_prec)
+        
     prm_sim.c = c
     prm_sim.tf = tf
 
@@ -155,13 +154,13 @@ def mdf2_rxn_0(prm_prob, prm_sim):
 
 def appliquer_conditions_frontieres(a, b, dirichlet):
     """
-    Fonction qui ajoute les conditions frontieres dans le syteme lineaire
-        - En r = 0 : Un schema Gear avant est utilise pour approximer le gradient
+    Fonction qui ajoute les conditions frontieres dans le systeme lineaire
+        - En r = 0 : Un schema de Gear avant est utilise pour approximer le gradient
                      de concentration (ordre 2) et imposer une condition de symetrie
         - En r = R : Une condition de Dirichlet est imposee
 
     Entrees :
-        - a : array n x n - Matrice des coefficients du syteme lineaire
+        - a : array n x n - Matrice des coefficients du systeme lineaire
         - b : array n - Vecteur membre de droite du systeme lineaire
         - dirichlet : float - Condition de Dirichlet imposee en r = R
 
@@ -195,7 +194,7 @@ def analytique(prm_prob, mesh):
         - mesh : array de float - Vecteur conteant les noeuds (r_i) du probleme 1D [m]
 
     Sortie :
-        - c : array de float - Le profile de concentration radial analytique au regime
+        - c : array de float - Le profil de concentration radial analytique au regime
                                permanent [mol/m^3]
     """
     c = [0.25*prm_prob.s/prm_prob.d_eff * prm_prob.r**2 * (r**2/prm_prob.r**2 - 1)
@@ -255,3 +254,41 @@ def erreur_linfty(c_num, c_analytique):
     erreur = max(abs(ci_num - ci_analytique)
                   for ci_num, ci_analytique in zip(c_num, c_analytique))
     return erreur
+
+#%% Getting Directories:
+    
+def get_path_results(main_path, folder):
+    """
+    Fonction qui trouve ou cree le chemin demande pour le stockage des resultats
+    
+    Entree:
+        - main_path: STR Chemin d'acces au code source
+        - folder: STR Dossier desire, 'erreurs' ou 'solutions'
+    
+    Sortie:
+        - path_results: STR Chemin d'acces au dossier de resultats concerne
+    """
+    
+    general_folder, cur_dir = os.path.split(main_path)
+    
+
+    if os.path.exists(general_folder+'\\results\\'+str(folder)):
+            
+        path_results = general_folder+'\\results'
+        
+    elif os.path.exists(main_path+'\\'+str(folder)):
+        
+        path_results = main_path
+        
+    elif os.path.exists(general_folder+'\\results'):
+        
+        os.mkdir(general_folder+'\\results\\'+str(folder))
+        path_results = general_folder+'\\results'
+        
+    else:
+        
+        os.mkdir(general_folder+'\\results')
+        os.mkdir(general_folder+'\\results\\'+str(folder))
+        path_results = general_folder+'\\results'
+    
+    return path_results
