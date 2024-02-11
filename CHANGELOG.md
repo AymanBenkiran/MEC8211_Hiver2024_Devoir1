@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ### Added
 
-- MAJOR Add function to verify evaluation of order of convergence in ``devoir1_functions.py``
+- MAJOR Add function to verify evaluation of order of convergence in ``devoir1_test_unitaires.py``
 
 ## [Main] - 2024-02-11
 
