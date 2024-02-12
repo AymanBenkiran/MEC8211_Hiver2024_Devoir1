@@ -17,10 +17,10 @@ import os
 def mdf1_rxn_0(prm_prob, prm_sim):
     """
     Fonction qui resout par le probleme transitoire jusqu'a l'atteinte du regime
-    permanent par la methode des differences finies (Schemas d'ordre globaux 1 en
-    temps et en espace).
-        - En r = 0 : Un schema de Gear avant est utilise pour approximer le gradient
-                     de concentration (ordre 2)
+    permanent par la methode des differences finies (Schemas d'ordre globaux 1
+    en temps et en espace).
+        - En r = 0 : Un schema de Gear avant est utilise pour approximer le
+                     gradient de concentration (ordre 2)
         - Pour les points centraux :
             - Derivee premiere : differentiation avant (ordre 1)
             - Derivee seconde : differentiation centree (ordre 2)
@@ -31,20 +31,28 @@ def mdf1_rxn_0(prm_prob, prm_sim):
             - c0 : float - Concentrations initiales [mol/m^3]
             - ce : float - Concentration de sel de l'eau salee [mol/m^3]
             - r : float - Rayon du pilier cylindrique [m]
-            - d_eff : float - Coefficient de diffusion effectif de sel dans le beton [m^2/s]
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
+            - d_eff : float - Coefficient de diffusion effectif de sel dans
+              le beton [m^2/s]
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du
+              terme source (0 ou 1) []
             - s : float - Terme source constant (reaction d'ordre 0) [mol/m^3/s]
-            - k : float - Constante de réaction pour la reaction d'ordre 1 [s^{-1}]
+            - k : float - Constante de réaction pour la reaction
+              d'ordre 1 [s^{-1}]
         - prm_sim : Objet qui contient les parametres de simulation
             - n_noeuds : int - Nombre de noeuds dans le maillage [noeud]
             - dr : float - Pas en espace des differents maillages [m]
             - dt : float - Pas de temps des differents maillages [s]
-            - mesh : array of floats - Vecteur conteant les noeuds (r_i) du probleme 1D [m]
-            - tol : float - Tolerance relative pour l'atteinte du regime permanent []
-            - c : array of floats - Solution une fois l'atteinte du regime permanent [mol/m^3]
+            - mesh : array of floats - Vecteur conteant les noeuds (r_i)
+              du probleme 1D [m]
+            - tol : float - Tolerance relative pour l'atteinte du regime
+              permanent []
+            - c : array of floats - Solution une fois l'atteinte du regime
+              permanent [mol/m^3]
             - tf : float - Temps de fin de la simulation [s]
-            - mdf : int - Ordre global en espace de la methode des differences finies utilisee []
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source []
+            - mdf : int - Ordre global en espace de la methode des differences
+              finies utilisee []
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme
+              source []
 
     Sortie : aucune
     """
@@ -60,7 +68,7 @@ def mdf1_rxn_0(prm_prob, prm_sim):
 
     while diff > prm_sim.tol:
         sum_c_prec = sum(c)
-        
+
         # Conditions frontieres
         appliquer_conditions_frontieres(a, b, prm_prob.ce)
 
@@ -72,7 +80,7 @@ def mdf1_rxn_0(prm_prob, prm_sim):
             a[i][i] = cst2 + cst1*(prm_sim.dr + 2*prm_sim.mesh[i])
             a[i][i+1] = -cst1*(prm_sim.dr + prm_sim.mesh[i])
             b[i] = cst2*(c[i] - prm_sim.dt*prm_prob.s)
-        
+
         # Resolution du systeme lineaire
         c = np.linalg.solve(a, b)
         tf += prm_sim.dt
@@ -84,11 +92,11 @@ def mdf1_rxn_0(prm_prob, prm_sim):
 #%% mdf2_rxn_0
 def mdf2_rxn_0(prm_prob, prm_sim):
     """
-    Fonction qui resout par le probleme transitoire jusqu'a l'atteinte du regime
-    permanent par la methode des differences finies (Schemas d'ordre globaux 1 en
-    temps et 2 en espace).
-        - En r = 0 : Un schema Gear avant est utilise pour approximer le gradient
-                     de concentration (ordre 2)
+    Fonction qui resout par le probleme transitoire jusqu'a l'atteinte du
+    regime permanent par la methode des differences finies (Schemas d'ordre
+    globaux 1 en temps et 2 en espace).
+        - En r = 0 : Un schema Gear avant est utilise pour approximer le
+                     gradient de concentration (ordre 2)
         - Pour les points centraux :
             - Derivee premiere : differentiation centree (ordre 2)
             - Derivee seconde : differentiation centree (ordre 3)
@@ -99,21 +107,27 @@ def mdf2_rxn_0(prm_prob, prm_sim):
             - c0 : float - Concentrations initiales [mol/m^3]
             - ce : float - Concentration de sel de l'eau salee [mol/m^3]
             - r : float - Rayon du pilier cylindrique [m]
-            - d_eff : float - Coefficient de diffusion effectif de sel dans le beton [m^2/s]
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
+            - d_eff : float - Coefficient de diffusion effectif de sel dans
+                      le beton [m^2/s]
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du
+                             terme source (0 ou 1) []
             - s : float - Terme source constant (reaction d'ordre 0) [mol/m^3/s]
             - k : float - Constante de reaction pour la reaction d'ordre 1 [s^{-1}]
         - prm_sim : Objet qui contient les parametres de simulation
             - n_noeuds : int - Nombre de noeuds dans le maillage [noeud]
             - dr : float - Pas en espace des differents maillages [m]
             - dt : float - Pas de temps des differents maillages [s]
-            - mesh : array de floats - Vecteur conteant les noeuds (r_i) du probleme 1D [m]
-            - tol : float - Tolerance relative pour l'atteinte du regime permanent []
-            - c : array de float - Solution une fois l'atteinte du regime permanent [mol/m^3]
+            - mesh : array de floats - Vecteur conteant les noeuds (r_i)
+                     du probleme 1D [m]
+            - tol : float - Tolerance relative pour l'atteinte du regime
+                    permanent []
+            - c : array de float - Solution une fois l'atteinte du regime
+                  permanent [mol/m^3]
             - tf : float - Temps de fin de la simulation [s]
-            - mdf : int - Ordre global en espace de la methode des differences finies utilisee []
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source []
-
+            - mdf : int - Ordre global en espace de la methode des differences
+                    finies utilisee []
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du
+                             terme source []
     Sortie : aucune
     """
     tf = 0
@@ -128,7 +142,7 @@ def mdf2_rxn_0(prm_prob, prm_sim):
         
     while diff > prm_sim.tol:
         sum_c_prec = sum(c)
-        
+
         # Conditions frontieres
         appliquer_conditions_frontieres(a, b, prm_prob.ce)
 
@@ -140,14 +154,13 @@ def mdf2_rxn_0(prm_prob, prm_sim):
             a[i][i] = cst2 + 4*cst1*prm_sim.mesh[i]
             a[i][i+1] = -cst1*(prm_sim.dr + 2*prm_sim.mesh[i])
             b[i] = cst2*(c[i] - prm_sim.dt*prm_prob.s)
-        
+
         # Resolution du systeme lineaire
         a_sparse = csc_matrix(a)
         c = spsolve(a_sparse, b)
-        #c = np.linalg.solve(a, b)
         tf += prm_sim.dt
         diff = abs(sum(c)-sum_c_prec)/abs(sum_c_prec)
-        
+
     prm_sim.c = c
     prm_sim.tf = tf
 
@@ -157,8 +170,9 @@ def mdf2_rxn_0(prm_prob, prm_sim):
 def appliquer_conditions_frontieres(a, b, dirichlet):
     """
     Fonction qui ajoute les conditions frontieres dans le systeme lineaire
-        - En r = 0 : Un schema de Gear avant est utilise pour approximer le gradient
-                     de concentration (ordre 2) et imposer une condition de symetrie
+        - En r = 0 : Un schema de Gear avant est utilise pour approximer
+                     le gradient de concentration (ordre 2) et imposer une
+                     condition de symetrie
         - En r = R : Une condition de Dirichlet est imposee
 
     Entrees :
@@ -189,15 +203,19 @@ def analytique(prm_prob, mesh):
             - c0 : float - Concentrations initiales [mol/m^3]
             - ce : float - Concentration de sel de l'eau salee [mol/m^3]
             - r : float - Rayon du pilier cylindrique [m]
-            - d_eff : float - Coefficient de diffusion effectif de sel dans le beton [m^2/s]
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
+            - d_eff : float - Coefficient de diffusion effectif de sel dans le
+                      beton [m^2/s]
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme
+                             source (0 ou 1) []
             - s : float - Terme source constant (reaction d'ordre 0) [mol/m^3/s]
-            - k : float - Constante de réaction pour la reaction d'ordre 1 [s^{-1}]
-        - mesh : array de float - Vecteur conteant les noeuds (r_i) du probleme 1D [m]
+            - k : float - Constante de réaction pour la reaction
+                  d'ordre 1 [s^{-1}]
+        - mesh : array de float - Vecteur conteant les noeuds (r_i) du
+                 probleme 1D [m]
 
     Sortie :
-        - c : array de float - Le profil de concentration radial analytique au regime
-                               permanent [mol/m^3]
+        - c : array de float - Le profil de concentration radial analytique
+              au regime permanent [mol/m^3]
     """
     c = [0.25*prm_prob.s/prm_prob.d_eff * prm_prob.r**2 * (r**2/prm_prob.r**2 - 1)
          + prm_prob.ce for r in mesh]
