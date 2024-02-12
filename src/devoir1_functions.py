@@ -3,7 +3,7 @@ MEC8211 - Devoir 1 : Verification de code
 Fichier : devoir1_functions.py
 Description : Fichier secondaire contenant les fonctions pour le devoir 1
               (a utiliser conjointement avec devoir1_main.py)
-Auteur.e.s :
+Auteur.e.s : Amishga Alphonius (2030051), Ayman Benkiran (1984509) et Maxence Farin (2310129)
 Date de creation du fichier : 5 féerier 2024
 """
 
@@ -14,15 +14,13 @@ from scipy.sparse import csc_matrix
 import os
 
 #%% mdf1_rxn_0
-
-
 def mdf1_rxn_0(prm_prob, prm_sim):
     """
     Fonction qui resout par le probleme transitoire jusqu'a l'atteinte du regime
-    permanent par la methode des differences finies (Schemas d'ordre globaux 1
-    en temps et en espace).
-        - En r = 0 : Un schema de Gear avant est utilise pour approximer le
-                     gradient de concentration (ordre 2)
+    permanent par la methode des differences finies (Schemas d'ordre globaux 1 en
+    temps et en espace).
+        - En r = 0 : Un schema de Gear avant est utilise pour approximer le gradient
+                     de concentration (ordre 2)
         - Pour les points centraux :
             - Derivee premiere : differentiation avant (ordre 1)
             - Derivee seconde : differentiation centree (ordre 2)
@@ -33,28 +31,20 @@ def mdf1_rxn_0(prm_prob, prm_sim):
             - c0 : float - Concentrations initiales [mol/m^3]
             - ce : float - Concentration de sel de l'eau salee [mol/m^3]
             - r : float - Rayon du pilier cylindrique [m]
-            - d_eff : float - Coefficient de diffusion effectif de sel dans
-              le beton [m^2/s]
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du
-              terme source (0 ou 1) []
+            - d_eff : float - Coefficient de diffusion effectif de sel dans le beton [m^2/s]
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
             - s : float - Terme source constant (reaction d'ordre 0) [mol/m^3/s]
-            - k : float - Constante de réaction pour la reaction
-              d'ordre 1 [s^{-1}]
+            - k : float - Constante de réaction pour la reaction d'ordre 1 [s^{-1}]
         - prm_sim : Objet qui contient les parametres de simulation
             - n_noeuds : int - Nombre de noeuds dans le maillage [noeud]
             - dr : float - Pas en espace des differents maillages [m]
             - dt : float - Pas de temps des differents maillages [s]
-            - mesh : array of floats - Vecteur conteant les noeuds (r_i)
-              du probleme 1D [m]
-            - tol : float - Tolerance relative pour l'atteinte du regime
-              permanent []
-            - c : array of floats - Solution une fois l'atteinte du regime
-              permanent [mol/m^3]
+            - mesh : array of floats - Vecteur conteant les noeuds (r_i) du probleme 1D [m]
+            - tol : float - Tolerance relative pour l'atteinte du regime permanent []
+            - c : array of floats - Solution une fois l'atteinte du regime permanent [mol/m^3]
             - tf : float - Temps de fin de la simulation [s]
-            - mdf : int - Ordre global en espace de la methode des differences
-              finies utilisee []
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme
-              source []
+            - mdf : int - Ordre global en espace de la methode des differences finies utilisee []
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source []
 
     Sortie : aucune
     """
@@ -70,7 +60,7 @@ def mdf1_rxn_0(prm_prob, prm_sim):
 
     while diff > prm_sim.tol:
         sum_c_prec = sum(c)
-
+        
         # Conditions frontieres
         appliquer_conditions_frontieres(a, b, prm_prob.ce)
 
@@ -82,7 +72,7 @@ def mdf1_rxn_0(prm_prob, prm_sim):
             a[i][i] = cst2 + cst1*(prm_sim.dr + 2*prm_sim.mesh[i])
             a[i][i+1] = -cst1*(prm_sim.dr + prm_sim.mesh[i])
             b[i] = cst2*(c[i] - prm_sim.dt*prm_prob.s)
-
+        
         # Resolution du systeme lineaire
         c = np.linalg.solve(a, b)
         tf += prm_sim.dt
@@ -94,11 +84,11 @@ def mdf1_rxn_0(prm_prob, prm_sim):
 #%% mdf2_rxn_0
 def mdf2_rxn_0(prm_prob, prm_sim):
     """
-    Fonction qui resout par le probleme transitoire jusqu'a l'atteinte du
-    regime permanent par la methode des differences finies (Schemas d'ordre
-    globaux 1 en temps et 2 en espace).
-        - En r = 0 : Un schema Gear avant est utilise pour approximer le
-                     gradient de concentration (ordre 2)
+    Fonction qui resout par le probleme transitoire jusqu'a l'atteinte du regime
+    permanent par la methode des differences finies (Schemas d'ordre globaux 1 en
+    temps et 2 en espace).
+        - En r = 0 : Un schema Gear avant est utilise pour approximer le gradient
+                     de concentration (ordre 2)
         - Pour les points centraux :
             - Derivee premiere : differentiation centree (ordre 2)
             - Derivee seconde : differentiation centree (ordre 3)
@@ -109,27 +99,20 @@ def mdf2_rxn_0(prm_prob, prm_sim):
             - c0 : float - Concentrations initiales [mol/m^3]
             - ce : float - Concentration de sel de l'eau salee [mol/m^3]
             - r : float - Rayon du pilier cylindrique [m]
-            - d_eff : float - Coefficient de diffusion effectif de sel dans
-                      le beton [m^2/s]
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du
-                             terme source (0 ou 1) []
+            - d_eff : float - Coefficient de diffusion effectif de sel dans le beton [m^2/s]
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
             - s : float - Terme source constant (reaction d'ordre 0) [mol/m^3/s]
             - k : float - Constante de reaction pour la reaction d'ordre 1 [s^{-1}]
         - prm_sim : Objet qui contient les parametres de simulation
             - n_noeuds : int - Nombre de noeuds dans le maillage [noeud]
             - dr : float - Pas en espace des differents maillages [m]
             - dt : float - Pas de temps des differents maillages [s]
-            - mesh : array de floats - Vecteur conteant les noeuds (r_i)
-                     du probleme 1D [m]
-            - tol : float - Tolerance relative pour l'atteinte du regime
-                    permanent []
-            - c : array de float - Solution une fois l'atteinte du regime
-                  permanent [mol/m^3]
+            - mesh : array de floats - Vecteur conteant les noeuds (r_i) du probleme 1D [m]
+            - tol : float - Tolerance relative pour l'atteinte du regime permanent []
+            - c : array de float - Solution une fois l'atteinte du regime permanent [mol/m^3]
             - tf : float - Temps de fin de la simulation [s]
-            - mdf : int - Ordre global en espace de la methode des differences
-                    finies utilisee []
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du
-                             terme source []
+            - mdf : int - Ordre global en espace de la methode des differences finies utilisee []
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source []
 
     Sortie : aucune
     """
@@ -142,10 +125,10 @@ def mdf2_rxn_0(prm_prob, prm_sim):
     # Condition initiale
     c = np.full(n, prm_prob.c0)
     c[-1] = prm_prob.ce
-
+        
     while diff > prm_sim.tol:
         sum_c_prec = sum(c)
-
+        
         # Conditions frontieres
         appliquer_conditions_frontieres(a, b, prm_prob.ce)
 
@@ -157,15 +140,14 @@ def mdf2_rxn_0(prm_prob, prm_sim):
             a[i][i] = cst2 + 4*cst1*prm_sim.mesh[i]
             a[i][i+1] = -cst1*(prm_sim.dr + 2*prm_sim.mesh[i])
             b[i] = cst2*(c[i] - prm_sim.dt*prm_prob.s)
-
+        
         # Resolution du systeme lineaire
-
         a_sparse = csc_matrix(a)
         c = spsolve(a_sparse, b)
         #c = np.linalg.solve(a, b)
         tf += prm_sim.dt
         diff = abs(sum(c)-sum_c_prec)/abs(sum_c_prec)
-  
+        
     prm_sim.c = c
     prm_sim.tf = tf
 
@@ -175,9 +157,8 @@ def mdf2_rxn_0(prm_prob, prm_sim):
 def appliquer_conditions_frontieres(a, b, dirichlet):
     """
     Fonction qui ajoute les conditions frontieres dans le systeme lineaire
-        - En r = 0 : Un schema de Gear avant est utilise pour approximer
-                     le gradient de concentration (ordre 2) et imposer une
-                     condition de symetrie
+        - En r = 0 : Un schema de Gear avant est utilise pour approximer le gradient
+                     de concentration (ordre 2) et imposer une condition de symetrie
         - En r = R : Une condition de Dirichlet est imposee
 
     Entrees :
@@ -208,19 +189,15 @@ def analytique(prm_prob, mesh):
             - c0 : float - Concentrations initiales [mol/m^3]
             - ce : float - Concentration de sel de l'eau salee [mol/m^3]
             - r : float - Rayon du pilier cylindrique [m]
-            - d_eff : float - Coefficient de diffusion effectif de sel dans le
-                      beton [m^2/s]
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme
-                             source (0 ou 1) []
+            - d_eff : float - Coefficient de diffusion effectif de sel dans le beton [m^2/s]
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
             - s : float - Terme source constant (reaction d'ordre 0) [mol/m^3/s]
-            - k : float - Constante de réaction pour la reaction
-                  d'ordre 1 [s^{-1}]
-        - mesh : array de float - Vecteur conteant les noeuds (r_i) du
-                 probleme 1D [m]
+            - k : float - Constante de réaction pour la reaction d'ordre 1 [s^{-1}]
+        - mesh : array de float - Vecteur conteant les noeuds (r_i) du probleme 1D [m]
 
     Sortie :
-        - c : array de float - Le profil de concentration radial analytique
-              au regime permanent [mol/m^3]
+        - c : array de float - Le profil de concentration radial analytique au regime
+                               permanent [mol/m^3]
     """
     c = [0.25*prm_prob.s/prm_prob.d_eff * prm_prob.r**2 * (r**2/prm_prob.r**2 - 1)
          + prm_prob.ce for r in mesh]
@@ -233,11 +210,11 @@ def erreur_l1(c_num, c_analytique):
     Fonction qui calcule la valeur de l'erreur L1 de la solution numerique obtenue
 
     Entree :
-        - c_num : Solution numerique du probleme 1D [mol/m^3]
-        - c_analytique : Solution analytique du probleme 1D [mol/m^3]
+        - c_num : array de float - Solution numerique du probleme 1D [mol/m^3]
+        - c_analytique : array de float - Solution analytique du probleme 1D [mol/m^3]
 
     Sortie :
-        - erreur : Norme de l'erreur L1 de la solution numerique [mol/m^3]
+        - erreur : float - Norme de l'erreur L1 de la solution numerique [mol/m^3]
     """
     erreur = sum(abs(ci_num - ci_analytique)
                   for ci_num, ci_analytique in zip(c_num, c_analytique))
@@ -251,11 +228,11 @@ def erreur_l2(c_num, c_analytique):
     Fonction qui calcule la valeur de l'erreur L2 de la solution numerique obtenue
 
     Entree :
-        - c_num : Solution numerique du probleme 1D [mol/m^3]
-        - c_analytique : Solution analytique du probleme 1D [mol/m^3]
+        - c_num : array de float - Solution numerique du probleme 1D [mol/m^3]
+        - c_analytique : array de float - Solution analytique du probleme 1D [mol/m^3]
 
     Sortie :
-        - erreur : Norme de l'erreur L2 de la solution numerique [mol/m^3]
+        - erreur : float - Norme de l'erreur L2 de la solution numerique [mol/m^3]
     """
     erreur = sum(abs(ci_num - ci_analytique)**2
                   for ci_num, ci_analytique in zip(c_num, c_analytique))
@@ -270,60 +247,63 @@ def erreur_linfty(c_num, c_analytique):
     Fonction qui calcule la valeur de l'erreur L_infty de la solution numerique obtenue
 
     Entree :
-        - c_num : Solution numerique du probleme 1D [mol/m^3]
-        - c_analytique : Solution analytique du probleme 1D [mol/m^3]
+        - c_num : array de float - Solution numerique du probleme 1D [mol/m^3]
+        - c_analytique : array de float - Solution analytique du probleme 1D [mol/m^3]
 
     Sortie :
-        - erreur : Norme de l'erreur L_infty de la solution numerique [mol/m^3]
+        - erreur : float - Norme de l'erreur L_infty de la solution numerique [mol/m^3]
     """
     erreur = max(abs(ci_num - ci_analytique)
                   for ci_num, ci_analytique in zip(c_num, c_analytique))
     return erreur
 
 #%% Getting Directories:
-
-
-def get_path_results(main_path, folder):
+    
+def get_path_results(main_path, file_sep_str, folder):
     """
     Fonction qui trouve ou cree le chemin demande pour le stockage des resultats
-
+    
     Entree:
-        - main_path: STR Chemin d'acces au code source
-        - folder: STR Dossier desire, 'erreurs' ou 'solutions'
-
+        - main_path: STR - Chemin d'acces au code source
+        - file_sep_str: STR - Separateurs de fichier dans le chemin utilise selon de systeme d'exploitation
+        - folder: STR - Dossier desire
+    
     Sortie:
         - path_results: STR Chemin d'acces au dossier de resultats concerne
     """
-
+    
     general_folder, cur_dir = os.path.split(main_path)
 
-    if os.name == 'nt':
-        if os.path.exists(general_folder+str(folder)):
+    print(general_folder)
+    print(cur_dir)
 
-            path_results = general_folder+'\\results\\'+str(folder)
+    # if os.name == 'nt':
+    #     if os.path.exists(general_folder+str(folder)):
+    #
+    #         path_results = general_folder+'\\results\\'+str(folder)
+    #
+    #     # Le dossier desire n'existe pas
+    #     elif os.path.exists(general_folder+'\\results'):
+    #
+    #         os.mkdir(general_folder+'\\results\\'+str(folder))
+    #         path_results = general_folder+'\\results\\' + str(folder)
+    #
+    #     # Le dossier "results" n'existe pas
+    #     else:
+    #
+    #         os.mkdir(general_folder + '\\results')
+    #         os.mkdir(general_folder + '\\results\\' + str(folder))
+    #         path_results = general_folder + '\\results\\' + str(folder)
+    # else:
+    if os.path.exists(general_folder+file_sep_str+str(folder)):
 
-        # Le dossier desire n'existe pas
-        elif os.path.exists(general_folder+'\\results'):
+        path_results = general_folder+file_sep_str+str(folder)
 
-            os.mkdir(general_folder+'\\results\\'+str(folder))
-            path_results = general_folder+'\\results\\' + str(folder)
-
-        # Le dossier "results" n'existe pas
-        else:
-
-            os.mkdir(general_folder + '\\results')
-            os.mkdir(general_folder + '\\results\\' + str(folder))
-            path_results = general_folder + '\\results\\' + str(folder)
-            
+    # Le dossier desire n'existe pas
     else:
-        if os.path.exists(general_folder+'/'+str(folder)+'/'):
 
-            path_results = general_folder+'/'+str(folder)+'/'
+        os.mkdir(general_folder+file_sep_str+str(folder))
+        path_results = general_folder+file_sep_str+str(folder)
 
-        # Le dossier desire n'existe pas
-        else:
-
-            os.mkdir(general_folder+'/'+str(folder)+'/')
-            path_results = general_folder+'/'+str(folder)+'/'
-
+    
     return path_results
