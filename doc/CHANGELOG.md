@@ -4,6 +4,12 @@ All notable changes to the 1st homework of MEC8211 are documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
+## [Main] - 2024-02-12
+
+### Changed
+
+- MINOR Modifying some comments in ``devoir1_tests_unitaires.py``.
+  
 ## [Main] - 2024-02-11
 
 ### Changed
