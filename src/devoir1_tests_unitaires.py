@@ -3,6 +3,7 @@ MEC8211 - Devoir 1 : Verification de code
 Fichier : devoir1_tests_unitaires.py
 Description : Fichier tertiaire contenant les fonctions de tests unitaires pour le devoir 1
               (a utiliser separement)
+Lancer avec :  python3 devoir1_tests_unitaires.py
 Auteur.e.s : Amishga Alphonius (2030051), Ayman Benkiran (1984509) et Maxence Farin (2310129)
 Date de creation du fichier : 5 février 2024
 """

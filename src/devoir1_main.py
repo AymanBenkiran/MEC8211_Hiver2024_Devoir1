@@ -192,11 +192,6 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
                                 path_save = path_analyse,
                                 title = title_analytique,
                                 num_label = f"Solution par Différences Finies (mdf{mdf_i}, n={n_noeuds})")
-
-        exported_data_analytique = pd.DataFrame({'dr': prm_sim.dr, 'c_analytique':c_analytique})
-
-        exported_data_analytique.to_csv(f"{path_analyse}/analytique_mdf{mdf_i}_rxn{ordre_de_rxn}_noeuds_"
-                                        f"{str(prm_sim.n_noeuds).zfill(3)}.csv", index=False)
         
     # Exportation des valeurs d'erreur dans un fichier csv
     exported_data = pd.DataFrame({'dr': dr, 'L1_error': liste_erreur_l1,

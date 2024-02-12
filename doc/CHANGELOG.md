@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 ### Changed
 
 - MINOR Modifying some comments in ``devoir1_tests_unitaires.py``.
+
+### Added
+ 
+- MAJOR Update ``readme.md`` to account for the current state of the project.
   
 ## [Main] - 2024-02-11
 
