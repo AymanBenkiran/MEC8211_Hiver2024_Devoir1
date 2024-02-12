@@ -214,5 +214,5 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
         mdf_i = prm_simulation[0].mdf
         ordre = ordre_convergence(dr, norm)
         print(f"L'ordre observe du schema numerique est {ordre} pour la norme"
-              "{name_norm}")
+              f"{name_norm}")
         print(f"L'ordre théorique du schéma est {mdf_i}")
