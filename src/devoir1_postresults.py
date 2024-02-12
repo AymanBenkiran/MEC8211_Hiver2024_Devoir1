@@ -37,7 +37,7 @@ def plot_stationnary_compar(r_l, st_sol, sim_sol,
 
     plt.figure()
     plt.plot(r_l, st_sol, label = 'Solution Analytique')
-    plt.plot(r_l, sim_sol, label = 'Solution par Différences Finies')
+    plt.plot(r_l, sim_sol, "--", label = 'Solution par Différences Finies')
     plt.xlabel("Rayon du Cylindre (m)")
     plt.ylabel("Concentration en sel (mol/m^3)")
     plt.title("Comparaison des solutions analytique et numérique")
