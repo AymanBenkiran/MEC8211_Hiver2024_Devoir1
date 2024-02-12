@@ -6,18 +6,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/).
 
 ## [Main] - 2024-02-11
 
-### Added
-
-- MAJOR Add function to verify evaluation of order of convergence in ``devoir1_test_unitaires.py``
-
-## [Main] - 2024-02-11
-
 ### Changed
 
 - MINOR Modifying the plotting process, using ``devoir1_tests_postresults.py``.
+- MAJOR Remove draft codes of every them member.
 
 ### Added
 
+- MAJOR Add function to verify evaluation of order of convergence in ``devoir1_test_unitaires.py``
 - MAJOR File architechture has changed to correspond to class requirements.
 - MAJOR Process to manage directories and files creation for storing results in ``devoir1_functions.py``.
 - MINOR Process to manage directories and files creations in ``devoir1_main.py``.
