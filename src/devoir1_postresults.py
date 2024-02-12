@@ -20,16 +20,18 @@ import os
 def plot_stationnary_compar(r_l, st_sol, sim_sol,
                             plotting = False,
                             path_save = '',
-                            title = ''):
+                            title = '',
+                            num_label = ''):
     """ Plot the spatial distribution of salt concentration of
     the stationnary solution and the finite differences solution
     Entrees:
-        - r_l:ARRAY of Spatial Nodes
+        - r_l: ARRAY of Spatial Nodes
         - st_sol: ARRAY of Stationnary Solution Values at Nodes
         - sim_sol: ARRAY of Simulation Solution Values at Nodes
         - plotting: BOOL to Determine if We Want to Plot Here the Graph
         - path_save: STR Desired Directory When Saving The Graph
         - title: STR Desired Title of the Graph When Saving The File
+        - num_label: STR numeric solution label
 
     Sortie:
         - FIGURE Graphique de la concentration en sel dans le cylindre
@@ -37,9 +39,9 @@ def plot_stationnary_compar(r_l, st_sol, sim_sol,
 
     plt.figure()
     plt.plot(r_l, st_sol, label = 'Solution Analytique')
-    plt.plot(r_l, sim_sol, "--", label = 'Solution par Différences Finies')
+    plt.plot(r_l, sim_sol, "--", label = num_label)
     plt.xlabel("Rayon du Cylindre (m)")
-    plt.ylabel("Concentration en sel (mol/m^3)")
+    plt.ylabel(r"Concentration en sel (mol/m$^3$)")
     plt.title("Comparaison des solutions analytique et numérique")
     plt.legend()
     plt.grid(linestyle = '--')

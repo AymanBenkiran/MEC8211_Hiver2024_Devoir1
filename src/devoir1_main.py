@@ -90,9 +90,9 @@ class ParametresSim:
     def __init__(self, prm_rxn: ParametresProb, p_n_noeuds: int, p_mdf: int):
         self.n_noeuds = p_n_noeuds
         self.dr = prm_rxn.r/(self.n_noeuds-1)
-        self.dt = 0.5*self.dr**2/prm_rxn.d_eff
+        self.dt = 0.5*1e-2**2/prm_rxn.d_eff
         self.mesh = np.linspace(0, prm_rxn.r, self.n_noeuds)
-        self.tol = 1e-8
+        self.tol = 1e-14
         self.c = np.zeros(self.n_noeuds)
         self.tf = 0
         self.mdf = p_mdf
@@ -103,7 +103,8 @@ class ParametresSim:
 #   et 1
 
 prm_rxn_0 = ParametresProb(ordre_de_rxn=0)
-#TODO prm_rxn_1 = ParametresProb(ordre_de_rxn=1) # pas encore implemente
+# TODO
+# prm_rxn_1 = ParametresProb(ordre_de_rxn=1) # pas encore implemente
 
 
 #%% Discretisation pour la reaction d'ordre 0
@@ -189,7 +190,13 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
         plot_stationnary_compar(prm_sim.mesh, c_analytique, prm_sim.c,
                                 plotting = False,
                                 path_save = path_analyse,
-                                title = title_analytique)
+                                title = title_analytique,
+                                num_label = f"Solution par Différences Finies (mdf{mdf_i}, n={n_noeuds})")
+
+        exported_data_analytique = pd.DataFrame({'dr': prm_sim.dr, 'c_analytique':c_analytique})
+
+        exported_data_analytique.to_csv(f"{path_analyse}/analytique_mdf{mdf_i}_rxn{ordre_de_rxn}_noeuds_"
+                                        f"{str(prm_sim.n_noeuds).zfill(3)}.csv", index=False)
         
     # Exportation des valeurs d'erreur dans un fichier csv
     exported_data = pd.DataFrame({'dr': dr, 'L1_error': liste_erreur_l1,
@@ -197,6 +204,7 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
                                   'Linfty_error': liste_erreur_linfty})
     
     exported_data.to_csv(f"{path_analyse}/erreurs_mdf{mdf_i}_rxn{ordre_de_rxn}.csv", index=False)
+
 
     # Affichage graphique
     title_errors = f"erreurs_mdf{mdf_i}"

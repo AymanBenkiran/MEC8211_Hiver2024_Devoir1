@@ -183,9 +183,9 @@ def appliquer_conditions_frontieres(a, b, dirichlet):
     Sortie : aucune
     """
     # Gear avant en r = 0
-    a[0][0] = 3.
-    a[0][1] = -4.
-    a[0][2] = 1.
+    a[0][0] = -3.
+    a[0][1] = 4.
+    a[0][2] = -1.
     b[0] = 0.
 
     # Dirichlet en r = r
@@ -292,9 +292,6 @@ def get_path_results(main_path, file_sep_str, folder):
     
     general_folder, cur_dir = os.path.split(main_path)
 
-    print(general_folder)
-    print(cur_dir)
-
     if os.path.exists(general_folder+file_sep_str+str(folder)):
 
         path_results = general_folder+file_sep_str+str(folder)
@@ -304,6 +301,5 @@ def get_path_results(main_path, file_sep_str, folder):
 
         os.mkdir(general_folder+file_sep_str+str(folder))
         path_results = general_folder+file_sep_str+str(folder)
-
     
     return path_results
