@@ -79,23 +79,23 @@ def test_errors():
 #%% test_solution_analytique
 def test_solution_analytique():
     
-    #Initialisation du cas d'input
+    # Initialisation du cas d'input
     prm_rxn_0 = ParametresProb(0)
     n_noeuds = 100
     R    = 0.5
     mesh    = np.linspace(0, R, n_noeuds)
     
-    #Calcul de la solution (output a tester)
+    # Calcul de la solution (output a tester)
     concentration_analytique = analytique(prm_rxn_0, mesh)
     
-    #Verification with expected results
+    # Verification with expected results
     test = 0
     
-    #Conditions
+    # Conditions
     if (abs(concentration_analytique[0] - 7) < 0.00001) and  (abs(concentration_analytique[-1] - 12) < 0.00001):
         test = 1
     
-    #Print test results
+    # Print test results
     if (test == 1):
         print("La solution analytique en r = 0 et r = R est verifiee")
 
@@ -112,21 +112,21 @@ def test_order_convergence():
     This function verifies the evaluation of order of convergence
     """
     
-    #Inputs
+    # Inputs
     dr_l = [100, 0.1]
     error_l = [0.01, 0.001]
     
-    #Output (execution)
+    # Output (execution)
     ordre = ordre_convergence(dr_l, error_l)
 
-    #Verification with expected results
+    # Verification with expected results
     test = 0
     
-        #Conditions
+        # Conditions
     if (abs(ordre - 0.3333) < 0.0001) :
         test = 1
     
-        #Print test results
+        # Print test results
     if (test == 1):
         print("L'ordre de convergence est verifie")
 
