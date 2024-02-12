@@ -77,7 +77,27 @@ def convergence_compar(norm_l, n_l,
     plt.figure()
     for name_norm, norm_l in norm_l:
 
-        plt.loglog(n_l, norm_l, "s-", label = name_norm)
+        ordre, cste = np.polyfit(np.log10(n_l), np.log10(norm_l), 1)
+        ordre, cste = format(ordre, '.2f'), format(cste, '.2f')
+
+        if typAnalyse == "Spatial":
+
+            label_norm = name_norm + '   ' + f'$log(\epsilon) = {ordre} log(\Delta r) + {cste}$'
+            plt.loglog(n_l, norm_l, "s-", label = label_norm)
+
+        else:
+            plt.loglog(n_l, norm_l, "s-", label = name_norm)
+
+    if typAnalyse == "Spatial":
+
+        plt.title("Convergence Spatiale: Évolution des Erreurs dans le cylindre")
+        plt.xlabel(r"$\Delta r$ [m]")
+
+    if typAnalyse == "Temporal":
+
+        plt.title("Convergence Temporelle: Évolution des Erreurs dans le cylindre")
+        plt.xlabel(r"$\Delta t$ [s]")
+
 
     if typAnalyse == "Spatial":
         plt.title("Convergence Spatiale: Évolution des Erreurs dans le cylindre")
