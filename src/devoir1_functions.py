@@ -4,7 +4,7 @@ Fichier : devoir1_functions.py
 Description : Fichier secondaire contenant les fonctions pour le devoir 1
               (a utiliser conjointement avec devoir1_main.py)
 Auteur.e.s : Amishga Alphonius (2030051), Ayman Benkiran (1984509) et Maxence Farin (2310129)
-Date de creation du fichier : 5 féerier 2024
+Date de creation du fichier : 5 février 2024
 """
 
 #%% Importation des modules
