@@ -18,10 +18,10 @@ import os
 # Solution
 
 def plot_stationnary_compar(r_l, st_sol, sim_sol,
-                            plotting = 'False',
+                            plotting = False,
                             path_save = '',
                             title = ''):
-    """ Plot the spatial distribution of salt concentration of 
+    """ Plot the spatial distribution of salt concentration of
     the stationnary solution and the finite differences solution
     Entrees:
         - r_l:ARRAY of Spatial Nodes
@@ -29,12 +29,12 @@ def plot_stationnary_compar(r_l, st_sol, sim_sol,
         - sim_sol: ARRAY of Simulation Solution Values at Nodes
         - plotting: BOOL to Determine if We Want to Plot Here the Graph
         - path_save: STR Desired Directory When Saving The Graph
-        - title: STR Desired Title of the Graph When Saving The File    
-    
+        - title: STR Desired Title of the Graph When Saving The File
+
     Sortie:
         - FIGURE Graphique de la concentration en sel dans le cylindre
         """
-        
+
     plt.figure()
     plt.plot(r_l, st_sol, label = 'Solution Analytique')
     plt.plot(r_l, sim_sol, label = 'Solution par Différences Finies')
@@ -49,18 +49,17 @@ def plot_stationnary_compar(r_l, st_sol, sim_sol,
             plt.savefig(title+".png", dpi=600)
         else:
             plt.savefig("ComparaisonSolAnalytique.png", dpi=600)
-            
-    if plotting == True:
+
+    if plotting is True:
         plt.show()
 
 
 # Erreurs
 
-def convergence_compar(norm_l, n_l, 
-                       typAnalyse = "Spatial", 
+def convergence_compar(norm_l, n_l,
+                       typAnalyse = "Spatial",
                        path_save = '',
                        title = ''):
-
     """ Construit et affiche un graphe de convergences des erreurs selon
     les différentes normes utilisées et enregistre le graphique dans un
     dossier spécifié
@@ -69,25 +68,25 @@ def convergence_compar(norm_l, n_l,
         - n_l: ARRAY of Abscisses for the Convergence Graph
         - typAnalyse: STR Type of Convergence Analysis
         - path_save: STR Desired Directory When Saving The Graph
-        - title: STR Desired Title of the Graph When Saving The File    
-    
+        - title: STR Desired Title of the Graph When Saving The File
+
     Sortie:
         - FIGURE Graphique de la concentration en sel dans le cylindre
         """
-        
+
     plt.figure()
     for name_norm, norm_l in norm_l:
-        
+
         plt.loglog(n_l, norm_l, "s-", label = name_norm)
-        
+
     if typAnalyse == "Spatial":
         plt.title("Convergence Spatiale: Évolution des Erreurs dans le cylindre")
         plt.xlabel(r"$\Delta r$ [m]")
-        
-    if typAnalyse == "Temporal":    
+
+    if typAnalyse == "Temporal":
         plt.title("Convergence Temporelle: Évolution des Erreurs dans le cylindre")
         plt.xlabel(r"$\Delta t$ [s]")
-        
+
     plt.ylabel(r"Erreur [mol/m$^3$]")
     plt.grid(linestyle = '-')
     plt.legend()
@@ -100,18 +99,18 @@ def convergence_compar(norm_l, n_l,
     plt.show()
 
 def ordre_convergence(dr_l, error_l):
-    """ 
+    """
     Utilise la bibliotheque Numpy pour determiner l'ordre de convergence d'un
     schema numerique a partir d'une discretisation spatiale et des erreurs associees
     Entrees:
-        - dr_l: ARRAY ou LIST, liste contenant les points de la discretisation 
+        - dr_l: ARRAY ou LIST, liste contenant les points de la discretisation
         radiale du cylindre
         - error_l: ARRAY ou LIST, liste contenant les erreurs du schema numerique
         etant donne une norme et une discretisation spatiale
     Sorties:
         - m: FLOAT Ordre de convergence du schéma
     """
-    
-    ordre,b = np.polyfit(np.log10(dr_l), np.log10(error_l), 1)
-    
+
+    ordre, b = np.polyfit(np.log10(dr_l), np.log10(error_l), 1)
+
     return ordre
