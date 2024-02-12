@@ -314,7 +314,7 @@ def get_path_results(main_path, folder):
             os.mkdir(general_folder + '\\results')
             os.mkdir(general_folder + '\\results\\' + str(folder))
             path_results = general_folder + '\\results\\' + str(folder)
-            
+
     else:
         if os.path.exists(general_folder+'/'+str(folder)+'/'):
 
