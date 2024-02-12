@@ -23,7 +23,7 @@ A simple call of the main script (`python3 devoir1_main.py`) produces a converge
 
 To run the code, the following modules are required:
 
-- mathplotlib
+- matplotlib
 - numpy
 - scipy 
 - os
