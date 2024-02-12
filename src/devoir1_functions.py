@@ -277,24 +277,6 @@ def get_path_results(main_path, file_sep_str, folder):
     print(general_folder)
     print(cur_dir)
 
-    # if os.name == 'nt':
-    #     if os.path.exists(general_folder+str(folder)):
-    #
-    #         path_results = general_folder+'\\results\\'+str(folder)
-    #
-    #     # Le dossier desire n'existe pas
-    #     elif os.path.exists(general_folder+'\\results'):
-    #
-    #         os.mkdir(general_folder+'\\results\\'+str(folder))
-    #         path_results = general_folder+'\\results\\' + str(folder)
-    #
-    #     # Le dossier "results" n'existe pas
-    #     else:
-    #
-    #         os.mkdir(general_folder + '\\results')
-    #         os.mkdir(general_folder + '\\results\\' + str(folder))
-    #         path_results = general_folder + '\\results\\' + str(folder)
-    # else:
     if os.path.exists(general_folder+file_sep_str+str(folder)):
 
         path_results = general_folder+file_sep_str+str(folder)
