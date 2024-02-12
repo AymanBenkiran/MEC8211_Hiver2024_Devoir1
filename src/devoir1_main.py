@@ -22,7 +22,8 @@ except ImportError:
     print("ERREUR ! Il y a une erreur fatale dans le fichier devoir1_functions.py")
 
 try:
-    from devoir1_postresults import (plot_stationnary_compar, convergence_compar)
+    from devoir1_postresults import (plot_stationnary_compar, convergence_compar,
+                                     ordre_convergence)
 except ImportError:
     print("ERREUR ! Il y a une erreur fatale dans le fichier devoir1_postresults.py")
 
@@ -39,7 +40,8 @@ class ParametresProb:
         - c0 : float - Concentrations initiales [mol/m^3]
         - ce : float - Concentration de sel de l'eau salee [mol/m^3]
         - r : float - Rayon du pilier cylindrique [m]
-        - d_eff : float - Coefficient de diffusion effectif de sel dans le beton [m^2/s]
+        - d_eff : float - Coefficient de diffusion effectif de sel dans le
+          beton [m^2/s]
         - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
         - s : float - Terme source constant (reaction d'ordre 0) [mol/m^3/s]
         - k : float - Constante de réaction pour la reaction d'ordre 1 [s^{-1}]
@@ -66,7 +68,8 @@ class ParametresSim:
     Entrees:
         - prm_rxn : Objet contenant les donnees du probleme
             - r : Rayon du pilier cylindrique [m^3]
-            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source (0 ou 1) []
+            - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme
+              source (0 ou 1) []
         - p_n_noeuds : int - Nombre de noeuds dans le maillage [noeud]
         - p_mdf : int - Ordre global en espace de la methode des differences finies utilisee []
 
@@ -74,9 +77,12 @@ class ParametresSim:
         - n_noeuds : int - Nombre de noeuds dans le maillage [noeud]
         - dr : float - Pas en espace des differents maillages [m]
         - dt : float - Pas de temps des differents maillages [s]
-        - mesh : array of floats - Vecteur conteant les noeuds (r_i) du probleme 1D [m]
-        - tol : float - Tolerance relative pour l'atteinte du regime permanent []
-        - c : array of floats - Solution une fois l'atteinte du regime permanent [mol/m^3]
+        - mesh : array of floats - Vecteur conteant les noeuds (r_i) du
+          probleme 1D [m]
+        - tol : float - Tolerance relative pour l'atteinte du regime
+          permanent []
+        - c : array of floats - Solution une fois l'atteinte du regime
+          permanent [mol/m^3]
         - tf : float - Temps de fin de la simulation [s]
         - mdf : int - Ordre global en espace de la methode des differences finies utilisee []
         - ordre_de_rxn : int - Ordre de la cinetique de reaction du terme source []
@@ -97,7 +103,7 @@ class ParametresSim:
 #   et 1
 
 prm_rxn_0 = ParametresProb(ordre_de_rxn=0)
-# prm_rxn_1 = ParametresProb(ordre_de_rxn=1)  # pas encore implemente
+#TODO prm_rxn_1 = ParametresProb(ordre_de_rxn=1) # pas encore implemente
 
 
 #%% Discretisation pour la reaction d'ordre 0
@@ -168,9 +174,11 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
     for prm_sim in prm_simulation:
         mdf_i = prm_sim.mdf
         ordre_de_rxn = prm_sim.ordre_de_rxn
-
         dr.append(prm_sim.dr)
-        c_analytique = analytique(prm_rxn_0, prm_sim.mesh)  # Solution analytique [mol/m^3]
+
+        # Solution analytique [mol/m^3]
+        c_analytique = analytique(prm_rxn_0, prm_sim.mesh)
+
         liste_erreur_l1.append(erreur_l1(prm_sim.c, c_analytique))
         liste_erreur_l2.append(erreur_l2(prm_sim.c, c_analytique))
         liste_erreur_linfty.append(erreur_linfty(prm_sim.c, c_analytique))
@@ -178,12 +186,10 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
         # Comparaison graphique des solutions
         n_noeuds = prm_sim.n_noeuds
         title_analytique = f"Comparaison_Analytique_mdf{mdf_i}_noeuds{n_noeuds}"
-
-        # Pour les courbes de solution stationnaire
-        # plot_stationnary_compar(prm_sim.mesh, c_analytique, prm_sim.c,
-        #                         plotting = 'False',
-        #                         path_save = path_analyse,
-        #                         title = title_analytique)
+        plot_stationnary_compar(prm_sim.mesh, c_analytique, prm_sim.c,
+                                plotting = False,
+                                path_save = path_analyse,
+                                title = title_analytique)
         
     # Exportation des valeurs d'erreur dans un fichier csv
     exported_data = pd.DataFrame({'dr': dr, 'L1_error': liste_erreur_l1,
@@ -201,3 +207,12 @@ for prm_simulation in [prm_simulations_mdf1_rxn0, prm_simulations_mdf2_rxn0]:
                            typAnalyse = "Spatial", 
                            path_save = path_analyse,
                            title = title_errors)
+
+    # Verification des ordres numeriques
+    for name_error, norm in errors_l:
+        name_norm = name_error.split()[-1]
+        mdf_i = prm_simulation[0].mdf
+        ordre = ordre_convergence(dr, norm)
+        print(f"L'ordre observe du schema numerique est {ordre} pour la norme"
+              "{name_norm}")
+        print(f"L'ordre théorique du schéma est {mdf_i}")
